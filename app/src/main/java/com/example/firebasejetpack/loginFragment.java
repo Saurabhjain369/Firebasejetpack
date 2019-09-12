@@ -7,6 +7,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -33,6 +35,8 @@ public class loginFragment extends Fragment implements View.OnClickListener {
     EditText edt_email,edt_pass;
     Button btn_log;
     TextView txt_reg;
+
+    Controller navcon;
 
     private FirebaseAuth auth;
 
@@ -152,7 +156,9 @@ public class loginFragment extends Fragment implements View.OnClickListener {
         }else if(id == R.id.txt_lrge)
         {
 
+            NavController navController = Navigation.findNavController(getActivity(),R.id.host_frag);
 
+            navController.navigate(R.id.registerFragment);
 
         }
 
@@ -160,6 +166,22 @@ public class loginFragment extends Fragment implements View.OnClickListener {
 
 
 
+
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+    user = auth.getCurrentUser();
+
+      if(user != null)
+      {
+
+         updateUI(user);
+
+          Toast.makeText(getActivity().getApplicationContext(),"user already login" ,Toast.LENGTH_LONG).show();
+      }
 
     }
 
@@ -174,6 +196,8 @@ public class loginFragment extends Fragment implements View.OnClickListener {
 
                     user = auth.getCurrentUser();
                     // return the current user
+
+                   updateUI(user);
 
                     Toast.makeText(getActivity().getApplicationContext(),"Login Succesfull" ,Toast.LENGTH_LONG).show();
                 }else
@@ -195,6 +219,17 @@ public class loginFragment extends Fragment implements View.OnClickListener {
     }
 
 
+    public void updateUI(FirebaseUser user)
+    {
 
+        navcon = new Controller();
+
+        Bundle b = new Bundle();
+
+               b.putParcelable("user",user);
+
+               navcon.navigetTofragment(R.id.dashboardFragment,getActivity(),b);
+
+    }
 
 }
